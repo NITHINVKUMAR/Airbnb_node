@@ -1,13 +1,10 @@
-import express from 'express';
-
+import express from "express";
+import { serverConfig } from "./config";
+import pingRouter from "./routes/ping.router";
 const app = express();
 
-const PORT = 3000;
+app.use(pingRouter);
 
-app.get('/ping', ()=>{
-    console.log('pong');
-})
-
-app.listen(PORT,()=>{
-    console.log(`Server is running at https://localhost:${PORT}`);
-})
+app.listen(serverConfig.PORT, () => {
+  console.log(`Server is running at https://localhost:${serverConfig.PORT}`);
+});
