@@ -1,16 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import fs from 'fs/promises';
-import { InternalServerError } from "../utils/errors/app.error";
+import logger from "../config/logger.config";
 
 export const pingHandler = async (req: Request, res: Response,next:NextFunction) => {
-  try{
-    await fs.readFile('sample');
+    // manually ading correlatio id
+    // logger.info('Received ping request',{correlationId : req.headers['x-correlation-id']});
+    logger.info('Received ping request');
     res.status(200).json({
-      message:'pong'
-    });
-  }
-  catch(error){
-    next (new InternalServerError('Something went Wrong !!'));
-  }
+    message:'pong',
+    success:true,
+    })
   
 };

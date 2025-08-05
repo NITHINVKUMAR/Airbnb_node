@@ -1,14 +1,15 @@
 import { Request,Response,NextFunction } from 'express';
 import {ZodObject} from 'zod';
-
+import logger from '../config/logger.config';
 // schema --> zod schema to validate request body
 // returns a middleware function that validates the request body against the schema 
 
 export const validateReqBody = (schema:ZodObject) => {
     return async (req:Request,res:Response,next:NextFunction)=>{
         try{
+            logger.info('Received request body');
             await schema.parseAsync(req.body);
-            console.log('request body is validated');
+            logger.info('Request body is validated');
             next();
         }
         catch(err){
