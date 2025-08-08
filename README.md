@@ -15,3 +15,17 @@ npm i
 6) Start the express server
 
 7) npm run dev
+
+
+Model
+A model defines the structure of a table in your database using code (e.g., fields like name, email, etc.).
+
+ Migration
+A migration is a script that creates or changes tables and columns in your database.
+
+up: code to apply the changes (e.g., create a table).
+
+down: code to revert the changes (e.g., drop the table).
+
+Seeder
+A seeder is a script that inserts sample or default data into the database.
