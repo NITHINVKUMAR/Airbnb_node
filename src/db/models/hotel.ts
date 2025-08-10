@@ -9,10 +9,10 @@ class Hotel extends Model<InferAttributes<Hotel>,InferCreationAttributes<Hotel>>
     declare location: string;
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
-    declare rating: number;
-    declare rating_count: number;
+    declare rating?: number;
+    declare rating_count?: number;
 }
-// These are the set of rules which will be imposed on TypseScript model in migrations those are the 
+// These are the set of rules which will be imposed on TypseScript model. but in migrations those are the 
 // set of rules which will be imposed on the database table
 // Init function will tell that what table should Hotel model map to and to map all the attributes(columns) to the table
 Hotel.init({
@@ -31,7 +31,7 @@ Hotel.init({
     },
     location: {
         type: "STRING",
-        allowNull: true
+        allowNull: false
     },
     createdAt: {
         type: "DATE",

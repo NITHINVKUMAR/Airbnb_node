@@ -8,5 +8,5 @@ export const attachCorrelationIdMiddleware = (req:Request,res:Response,next:Next
     asyncLocalStorage.run({correlationId:correlationId},()=>{
         next();
     })
-    next();
+    // next();
 }
