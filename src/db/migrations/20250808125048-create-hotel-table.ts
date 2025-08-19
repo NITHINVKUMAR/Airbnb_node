@@ -1,3 +1,5 @@
+// Sequelize, QueryInterface is an abstraction layer provided by Sequelize that allows you to directly 
+// interact with the database at a lower level than Sequelize models.
 import { QueryInterface } from "sequelize";
 module.exports = {
   async up(queryInterface: QueryInterface) {
@@ -23,7 +25,7 @@ module.exports = {
         id INTEGER AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         address VARCHAR(255) NOT NULL,
-        location VARCHAR(255),
+        location VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       );
