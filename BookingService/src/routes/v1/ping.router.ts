@@ -1,9 +1,9 @@
 import express from "express";
 import { pingHandler } from "../../controllers/ping.controller";
-import { validateReqBody } from "../../validators";
+import { validateRequestBody } from "../../validators";
 import { pingSchema } from "../../validators/ping.validator";
 const pingRouter = express.Router();
 
-pingRouter.get('/',validateReqBody(pingSchema),pingHandler);
+pingRouter.get('/',validateRequestBody(pingSchema),pingHandler);
 
 export default pingRouter;

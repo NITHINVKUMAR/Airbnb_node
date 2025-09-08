@@ -21,7 +21,7 @@ model Booking {
   updatedAt        DateTime        @updatedAt
   bookingAmount    Int
   status           BookingStatus   @default(PENDING)
-  totalGuest       Int
+  totalGuests      Int
   idemptencyKey    idempotencyKey?
 }
 
@@ -31,7 +31,7 @@ model idempotencyKey {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   finalized   Boolean  @default(false)
-  bookingId   Int?     @unique
+  bookingId   Int     @unique
   booking     Booking? @relation(fields: [bookingId], references: [id])
 }
 
