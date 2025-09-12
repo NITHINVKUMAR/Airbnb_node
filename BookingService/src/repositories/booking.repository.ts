@@ -26,17 +26,19 @@ export async function createIdempotencyKey(key:string,bookingId:number) {
 }
 
 export async function  getIdempotancyKeyWithLock(tx:Prisma.TransactionClient,key:string) {
+    // the ${key} which we pass in the query is prone to sql injection so we need to validate it first
+    // to validate we can use npm package 'uuid' to validate the uuid format
     if(!isValidUUID(key)){
         throw new BadRequestError("Invalid idempotency key format");
     }
-
+    // Array<idempotencyKey> means the array of idempotencyKey type because the query will return an array of idempotencyKey type we need to define the type of array
     const idempotencyKey:Array<idempotencyKey> = await tx.$queryRaw(
         // Primsa.raw will take the string and convert to sql and gives to queryraw 
         Prisma.raw(`SELECT * FROM IdempotencyKey WHERE idemkey = '${key}' FOR UPDATE;`)
     )
  
     console.log("Idempotancy key with Lock",idempotencyKey);
-
+    // since the query will return an array so we need to check if the array is empty or not
     if(!idempotencyKey || idempotencyKey.length === 0){
         throw new NotFoundError("Invalid idempotency key");
     }

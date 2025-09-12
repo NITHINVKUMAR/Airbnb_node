@@ -9,3 +9,5 @@ install npm i @prisma/client to download the prisma client it is a libraray prov
 
 install npx prisma generate inside src folder this will automatically define the typescript types for our models   
 
+Assignment
+Implement pessimistic locking in createBooking function 
