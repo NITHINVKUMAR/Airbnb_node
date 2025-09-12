@@ -3,18 +3,19 @@ import {
   createIdempotencyKey,
   confirmBooking,
   finalizeIdempotencyKey,
-  getIdempotancyKey,
+  getIdempotancyKeyWithLock,
 } from "../repositories/booking.repository";
 import { generateIdempotancyKey } from "../utils/generateIdempotancyKey";
-import { BadRequestError,NotFoundError } from "../utils/errors/app.error";
+import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
 import { CreateBookingDTO } from "../dto/booking.dto";
+import PrismaClient from "../prisma/client";
 
 export async function createBookingService(createBookingDTO: CreateBookingDTO) {
   const booking = await createBooking({
-    userId:createBookingDTO.userId,
-    hotelId:createBookingDTO.hotelId,
-    totalGuests:createBookingDTO.totalGuests,
-    bookingAmount:createBookingDTO.bookingAmount,
+    userId: createBookingDTO.userId,
+    hotelId: createBookingDTO.hotelId,
+    totalGuests: createBookingDTO.totalGuests,
+    bookingAmount: createBookingDTO.bookingAmount,
   });
   const idempotencyKey = await generateIdempotancyKey();
   await createIdempotencyKey(idempotencyKey, booking.id);
@@ -22,14 +23,20 @@ export async function createBookingService(createBookingDTO: CreateBookingDTO) {
 }
 
 export async function confirmBookingService(idempotencyKey: string) {
-  const idempotancyKeyData = await getIdempotancyKey(idempotencyKey);
-  if (!idempotancyKeyData) {
-    throw new NotFoundError("Invalid idempotency key");
-  }
-  if (idempotancyKeyData.finalized) {
-    throw new BadRequestError("Booking already finalized");
-  }
-  const booking = await confirmBooking(idempotancyKeyData.bookingId);
-  await finalizeIdempotencyKey(idempotencyKey);
-  return booking;
+  /* user can send two parallel request in single transaction so after reaching first it can do context switch complete 
+  the second request and then come back to first request again it will do the same operation so concurrancy issue can 
+  happen within single transaction so we need to wrap the complete operation in single transaction and has user will send 
+  two or three reuest concurrently in this case pessimistic locking will help us to lock the row until the transaction is completed */
+  return await PrismaClient.$transaction(async (tx) => {
+    const idempotancyKeyData = await getIdempotancyKeyWithLock(tx, idempotencyKey);
+    if (!idempotancyKeyData) {
+      throw new NotFoundError("Invalid idempotency key");
+    }
+    if (idempotancyKeyData.finalized) {
+      throw new BadRequestError("IdempotancyKey already finalized");
+    }
+    const booking = await confirmBooking(tx,idempotancyKeyData.bookingId);
+    await finalizeIdempotencyKey(tx,idempotencyKey);
+    return booking;
+  });
 }
