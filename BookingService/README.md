@@ -9,5 +9,8 @@ install npm i @prisma/client to download the prisma client it is a libraray prov
 
 install npx prisma generate inside src folder this will automatically define the typescript types for our models   
 
+install npm i ioredis it is a client which will interact with redis database
+install npm i redlock  it is a library which will help us to implement pessimistic locking in our application
+
 Assignment
 Implement pessimistic locking in createBooking function 
