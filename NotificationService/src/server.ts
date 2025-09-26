@@ -6,8 +6,7 @@ import { genericErrorHandler } from "./middlewares/error.middleware";
 import logger from "./config/logger.config";
 import { attachCorrelationIdMiddleware } from "./middlewares/correlation.middlweare";
 import { setUpMailerWorker } from "./processors/email.processor";
-import {addEmailToQueue} from "./producers/email.producer";
-import {NotificationDTO} from "./dto/noticifaction.dto";
+import { addEmailToQueue } from "./producers/email.producer";
 const app = express();
 
 // Middleware to parse JSON requests so that only JSON bodies are processed from the request body
@@ -21,18 +20,14 @@ app.use('/api/v2',v2Router);
 // Adding Error Handling middleware
 app.use(genericErrorHandler);
 
-app.listen(serverConfig.PORT, () => {
+app.listen(serverConfig.PORT, async() => {
   logger.info(`Server is running at https://localhost:${serverConfig.PORT}`);
   setUpMailerWorker();
   logger.info(`Mailer Worker is set up and running.`);
-  const sampleEmail:NotificationDTO = {
-    to: "sample:email.com",
-    subject: "Test Email",
-    templateId: "welcome",
-    params: {
-      name: "John Doe",
-      message: "This is a test email.",
-    }
-  }
-  addEmailToQueue(sampleEmail);
+  addEmailToQueue({
+    to: 'nithinvkumar22@gmail.com',
+    subject: 'Test Email from Node.js',
+    templateId: 'welcome',
+    params: { name: 'Nithin',appName:'Booking Service' }
+  })
 });
