@@ -54,3 +54,14 @@ export async function softDeleteHotel(hotelId: number) {
     logger.info(`Hotel with ID ${hotelId} soft deleted successfully`);
     return true;
 }
+
+export async function updateHotel(hotelId: number, updateData: Partial<CreateHotelDTO>) { // partial makes all fields optional
+    const hotel = await Hotel.findByPk(hotelId);
+    if (!hotel) {
+        logger.error(`Hotel with ID ${hotelId} not found for update`);
+        throw new NotFoundError(`Hotel with ID ${hotelId} not found`);
+    }
+    await hotel.update(updateData);
+    logger.info(`Hotel with ID ${hotelId} updated successfully`);
+    return hotel;
+}

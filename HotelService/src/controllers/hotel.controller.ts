@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import {createHotelService,getHotelByIdService,getAllHotelsService,softDeleteHotelService} from "../services/hotel.service";
+import {createHotelService,getHotelByIdService,getAllHotelsService,softDeleteHotelService,updateHotelService} from "../services/hotel.service";
 import { StatusCodes } from "http-status-codes";
 export const createHotelHandler = async (req: Request,res: Response,next: NextFunction) => {
     try{
@@ -49,6 +49,20 @@ export const softDeleteHotelHandler = async (req: Request, res: Response, next: 
 
         res.status(StatusCodes.OK).json({
             message: "Hotel deleted successfully",
+            data:hotelResponse,
+            success: true,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateHotelHandler = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const hotelResponse = await updateHotelService(Number(req.params.id), req.body);
+
+        res.status(StatusCodes.OK).json({
+            message: "Hotel updated successfully",
             data:hotelResponse,
             success: true,
         });

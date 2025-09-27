@@ -1,3 +1,4 @@
+// This files is used to create a sequelize instance which will be used to connect to the database
 import { Sequelize } from "sequelize";
 import { dbConfig } from "../../config/index";
 
