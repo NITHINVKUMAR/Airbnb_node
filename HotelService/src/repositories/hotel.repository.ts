@@ -1,67 +1,38 @@
 import logger from "../config/logger.config";
 import Hotel from "../db/models/hotel";
-import { CreateHotelDTO } from "../dto/hotel.dto";
 import { NotFoundError } from "../utils/errors/app.error";
+import  BaseRepository  from "./base.repository";
 
-//this function is asynchronous and will always return a promise that resolves to a Hotel object.
-export async function createHotel(hotelData: CreateHotelDTO){
-    
-    const hotel = await Hotel.create({
-        name: hotelData.name,
-        address: hotelData.address,
-        location: hotelData.location,
-        rating: hotelData.rating,
-        rating_count: hotelData.rating_count
-    })
-    logger.info(`Hotel created with ID: ${hotel.id}`);
-    return hotel; 
-    
-}
-export async function getHotelById(hotelId: number){
-    const hotel = await Hotel.findByPk(hotelId);
-    if(!hotel){
-        logger.error(`Hotel with ID ${hotelId} not found`);
-        throw new NotFoundError(`Hotel with ID ${hotelId} not found`);
-    }
-    logger.info(`Hotel fetched with ID: ${hotel.id}`);
-    return hotel;
-}
-
-export async function getAllHotels() {
-    const hotels = await Hotel.findAll({
-        where:{
-            deletedAt: null 
-        }
+// As base class is abstract we cannot create its instance menas we cannot
+// add more functionality to it but we can extend it and add more functionality to the derived class
+// As base class is abstarct we should not modify or override its methods in derived class
+// so we extend the base class and add more functionality to it like soft delete and find all hotels which are not deleted
+export class HotelRepository extends BaseRepository<Hotel> {
+  constructor() {
+    super(Hotel);
+  }
+  async findAll() {
+    const hotels = await this.model.findAll({
+      where: {
+        deletedAt: null,
+      },
     });
-    if(!hotels){
-        logger.error("No hotels found");
-        throw new NotFoundError("No hotels found");
+    if (!hotels) {
+      logger.error("No hotels found");
+      throw new NotFoundError("No hotels found");
     }
-    logger.info(`Fetched ${hotels.length} hotels`);
     return hotels;
-}
-
-export async function softDeleteHotel(hotelId: number) {
-    const hotel = await Hotel.findByPk(hotelId);
+  }
+  async softDelete(id: number) {
+    const hotel = await Hotel.findByPk(id);
     if (!hotel) {
-        logger.error(`Hotel with ID ${hotelId} not found for soft delete`);
-        throw new NotFoundError(`Hotel with ID ${hotelId} not found`);
+      logger.error(`Hotel with ID ${id} not found for soft delete`);
+      throw new NotFoundError(`Hotel with ID ${id} not found`);
     }
-    
+
     hotel.deletedAt = new Date();
     await hotel.save();
-    
-    logger.info(`Hotel with ID ${hotelId} soft deleted successfully`);
+    logger.info(`Hotel with ID ${id} soft deleted successfully`);
     return true;
-}
-
-export async function updateHotel(hotelId: number, updateData: Partial<CreateHotelDTO>) { // partial makes all fields optional
-    const hotel = await Hotel.findByPk(hotelId);
-    if (!hotel) {
-        logger.error(`Hotel with ID ${hotelId} not found for update`);
-        throw new NotFoundError(`Hotel with ID ${hotelId} not found`);
-    }
-    await hotel.update(updateData);
-    logger.info(`Hotel with ID ${hotelId} updated successfully`);
-    return hotel;
+  }
 }
