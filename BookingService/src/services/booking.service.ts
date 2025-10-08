@@ -17,6 +17,9 @@ import { serverConfig } from "../config";
 import { redlock } from "../config/redis.config";
 
 export async function createBookingService(createBookingDTO: CreateBookingDTO) {
+  // To avoid multiple bookings for same hotel by different user at the same time we will use distributed locking
+  // we will use redlock algorithm for distributed locking
+  // we will use hotel id as resource for locking so that only one user can book the same hotel at the same time
   const ttl = serverConfig.LOCK_TTL;
   const bookingResource = `hotel:${createBookingDTO.hotelId}`;
   try {
