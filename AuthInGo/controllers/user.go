@@ -17,7 +17,7 @@ func NewUserContoller(_userService services.UserService) *UserContoller {
 }
 
 func (uc *UserContoller) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("RegisterUser called in UserConrtoller")
-	uc.UserService.CreateUser()
-	w.Write([]byte("User Registeration Endpoint"))
+	fmt.Println("GetUserById called in UserConrtoller")
+	uc.UserService.GetUserById()
+	w.Write([]byte("User fetching Endpoint"))
 }

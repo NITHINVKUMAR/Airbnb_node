@@ -1,9 +1,10 @@
 package app
 
 import (
+	dbConfig "AuthInGO/config/db"
 	config "AuthInGO/config/env"
 	"AuthInGO/controllers"
-	db "AuthInGO/db/repositories"
+	repo "AuthInGO/db/repositories"
 	"AuthInGO/router"
 	"AuthInGO/services"
 	"fmt"
@@ -35,7 +36,12 @@ func NewApplication(cfg Config) *Application {
 }
 
 func (app *Application) Run() error {
-	ur := db.NewUserRepository()
+	db, err := dbConfig.SetUpDB()
+	if err != nil {
+		fmt.Println("Error Setting up database")
+		return err
+	}
+	ur := repo.NewUserRepository(db)
 	us := services.NewUserService(ur)
 	uc := controllers.NewUserContoller(us)
 	uRouter := router.NewUserRouter(uc)
