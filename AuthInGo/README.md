@@ -7,3 +7,8 @@ install Goose librarby for database migrations go install github.com/pressly/goo
 goose -dir "db/migrations"  create create_user_table sql use this command to create a new migration file for creating user table under db/migrations folder
 
 goose -dir "db/migrations" mysql "root:Welcome@1@tcp(127.0.0.1:3306)/auth_dev" up This is to up the migrations to create the user table in the database
+
+do Makefile for creating makefile commands for database migrations
+
+install gmake utility for running makefiles 
+we can just use make migrate-up to migrate all the migrations for mac use gmake migrate-up
