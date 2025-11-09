@@ -8,7 +8,9 @@ import (
 
 type UserRepository interface {
 	GetByID() (*models.User, error)
-	Create() error
+	Create(username string, email string, hashedPassword string) error
+	// GetAll() ([]*models.User, error)
+	// DeleteByID(id int64) error
 }
 
 type UserRepositoryImpl struct {
@@ -22,9 +24,10 @@ func NewUserRepository(_db *sql.DB) UserRepository {
 	}
 }
 
-func (u *UserRepositoryImpl) Create() error {
+func (u *UserRepositoryImpl) Create(username string, email string, hashedPassword string) error {
 	query := "INSERT INTO users (username,email,password) VALUES (?,?,?)"
-	result, err := u.db.Exec(query, "TestUser", "test@gmail.com", "password123")
+	// if you are not returning any rows use Exec method
+	result, err := u.db.Exec(query, username, email, hashedPassword)
 	if err != nil {
 		fmt.Println("Error inserting user:", err)
 		return err
@@ -47,7 +50,8 @@ func (u *UserRepositoryImpl) GetByID() (*models.User, error) {
 
 	// Step 1: Prepare the SQL query
 	query := "SELECT id,username,email,password,created_at,updated_at FROM users WHERE id = ?"
-	// Step 2: Execute the query
+	// Step 2: Execute the query QueryRow will return a single row
+	// if you expect multiple rows use Query method instead Query()
 	row := u.db.QueryRow(query, 1) // Assuming we are fetching user with ID 1
 	// Step 3: Process the result
 	user := &models.User{}

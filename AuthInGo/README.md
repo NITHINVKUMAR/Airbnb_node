@@ -12,3 +12,5 @@ do Makefile for creating makefile commands for database migrations
 
 install gmake utility for running makefiles 
 we can just use make migrate-up to migrate all the migrations for mac use gmake migrate-up
+
+in terminal do go get golang.org/x/crypto/bcrypt this is to install bcrypt library for hashing passwords

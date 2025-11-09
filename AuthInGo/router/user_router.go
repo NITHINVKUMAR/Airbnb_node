@@ -7,15 +7,17 @@ import (
 )
 
 type UserRouter struct {
-	userContoller *controllers.UserContoller
+	userController *controllers.UserContoller
 }
 
 func NewUserRouter(_userController *controllers.UserContoller) Router {
 	return &UserRouter{
-		userContoller: _userController,
+		userController: _userController,
 	}
 }
 
 func (ur *UserRouter) Register(r chi.Router) {
-	r.Get("/profile", ur.userContoller.RegisterUser)
+	r.Get("/users/profile", ur.userController.RegisterUser)
+	r.Post("/users/signup", ur.userController.CreateUser)
+	r.Post("/users/login", ur.userController.LoginUser)
 }

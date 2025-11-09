@@ -21,3 +21,15 @@ func (uc *UserContoller) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	uc.UserService.GetUserById()
 	w.Write([]byte("User fetching Endpoint"))
 }
+
+func (uc *UserContoller) CreateUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("CreateUser called in UserConrtoller")
+	uc.UserService.CreateUser()
+	w.Write([]byte("User creation Endpoint done"))
+}
+
+func (uc *UserContoller) LoginUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("LoginUser called in UserConrtoller")
+	uc.UserService.LoginUser()
+	w.Write([]byte("User Loggin EndPoint done"))
+}
