@@ -14,3 +14,4 @@ install gmake utility for running makefiles
 we can just use make migrate-up to migrate all the migrations for mac use gmake migrate-up
 
 in terminal do go get golang.org/x/crypto/bcrypt this is to install bcrypt library for hashing passwords
+install go get -u github.com/golang-jwt/jwt/v5 this is to install JWT library for handling JSON Web Tokens in Go
